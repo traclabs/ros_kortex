@@ -138,16 +138,11 @@ void RobotiqGripperCommandActionServer::gripper_position_polling_thread()
     // We got out this loop, meaning the trajectory is over or the time is up
     // The trajectory is not running, meaning it's finished or it was stopped
     if (!m_is_trajectory_running)
-    {        
-        if (is_goal_tolerance_respected())
-        {
-            m_goal.setSucceeded();
-        }
-        else
-        {
-            ROS_ERROR("we're finished");
-            m_goal.setAborted();
-        }
+    {
+        // Always succeed - even if gripper couldn't achieve desired position
+        // This is useful if we grip something, and is not able to close all the way, and we don't want to abort
+        // the goal
+        m_goal.setSucceeded();
     }
 
     // Timeout was reached
